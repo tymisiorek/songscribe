@@ -1,10 +1,11 @@
 import requests
-
+from dotenv import load_dotenv
 from flask import Flask, redirect, request, jsonify, session
 from datetime import datetime, timedelta
 import urllib.parse
 import os
 
+load_dotenv()
 
 app = Flask(__name__)
 #add later
@@ -14,12 +15,12 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = "http://localhost:5000/callback"
 AUTH_URL = 'https://accounts.spotify.com/authorize'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
-API_BASE_URL =  'htpps://api.spotify.com/v1'
+API_BASE_URL =  'https://api.spotify.com/v1'
 
 
 @app.route('/')
 def index(): 
-    return "Songscribe <a href = '/login>Login With Spotify:</a>"
+    return "Songscribe <a href='/login'>Login With Spotify</a>"
 
 @app.route('/login')
 def login():
@@ -80,7 +81,7 @@ def refresh_token():
     if 'refresh_token' not in session:
         return redirect('/login')
 
-    if datetime.now().timestamp > session['expires_at']:
+    if datetime.now().timestamp() > session['expires_at']:
         req_body = {
             'grant_type': 'refresh_token',
             'refresh_token': session['refresh_token'],
@@ -93,3 +94,6 @@ def refresh_token():
         session['expires_at'] = datetime.now().timestamp() + new_token_info['expires_in']
 
         return redirect('/playlists')
+    
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug = True)
