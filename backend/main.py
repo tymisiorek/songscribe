@@ -1,13 +1,16 @@
 import requests
 from dotenv import load_dotenv
-from flask import Flask, redirect, request, jsonify, session
+from flask import Flask, redirect, request, jsonify, session, render_template
 from datetime import datetime, timedelta
 import urllib.parse
 import os
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+import pandas as pd
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../frontend/templates')
 #add later
 app.secret_key = os.getenv("SECRET_KEY")
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -18,9 +21,11 @@ TOKEN_URL = 'https://accounts.spotify.com/api/token'
 API_BASE_URL =  'https://api.spotify.com/v1/'
 
 
+
+
 @app.route('/')
 def index(): 
-    return "Songscribe <a href='/login'>Login With Spotify</a>"
+    return render_template('index.html')
 
 @app.route('/login')
 def login():
@@ -73,7 +78,7 @@ def get_playlists():
     response = requests.get(API_BASE_URL + 'me/playlists', headers = headers)
     playlists = response.json()
 
-    return jsonify(playlists)
+    return render_template('playlists.html', playlists = playlists['items'])
 
 
 @app.route('/refresh-token')
