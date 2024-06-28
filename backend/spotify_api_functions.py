@@ -1,17 +1,18 @@
 from dotenv import load_dotenv
 import os
 import base64
-from requests import post, get
+import requests
 import json
+from flask import Flask
 
 #load environment variable files
 load_dotenv()
-client_id = os.getenv("CLIENT_ID")
-client_secret = os.getenv("CLIENT_SECRET")
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
 #get token
 def get_token():
-    auth_string = client_id + ":" + client_secret
+    auth_string = CLIENT_ID + ":" + CLIENT_SECRET
     auth_bytes = auth_string.encode("utf-8")
     auth_base64 = str(base64.b64encode(auth_bytes), "utf-8")
 
@@ -21,7 +22,7 @@ def get_token():
         "Content-Type": "application/x-www-form-urlencoded"
     }
     data = {"grant_type": "client_credentials"}
-    result = post(url, headers = headers, data = data)
+    result = requests.post(url, headers = headers, data = data)
     json_result = json.loads(result.content)
     token = json_result["access_token"]
     return token
@@ -34,7 +35,7 @@ def search_for_artist(token, artist_name):
     headers = get_auth_header(token)
     query = f"?q={artist_name}&type=artist&limit=1"
     query_url = url + query
-    result = get(query_url, headers = headers)
+    result = requests.get(query_url, headers = headers)
     json_result = json.loads(result.content)["artists"]["items"]
     if len(json_result) == 0:
         print("Artist does not exist.")
@@ -46,21 +47,8 @@ def search_for_artist(token, artist_name):
 def get_songs_by_artist(token, artist_id):
     url = "https://api.spotify.com/v1/artists/" + artist_id + "/top-tracks?country=US"
     headers = get_auth_header(token)
-    result = get(url, headers=headers)
+    result = requests.get(url, headers=headers)
     json_result = json.loads(result.content)["tracks"]
     return json_result
 
 
-def get_playlists(token)
-
-
-
-
-
-token = get_token()
-result = search_for_artist(token, "kodak black")
-artist_id = result["id"]
-songs = get_songs_by_artist(token, artist_id)
-
-for index, song in enumerate(songs):
-    print(f"{index+1}. {song['name']}")
