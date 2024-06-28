@@ -15,7 +15,7 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = "http://localhost:5000/callback"
 AUTH_URL = 'https://accounts.spotify.com/authorize'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
-API_BASE_URL =  'https://api.spotify.com/v1'
+API_BASE_URL =  'https://api.spotify.com/v1/'
 
 
 @app.route('/')
@@ -53,7 +53,7 @@ def callback():
         token_info = response.json()
 
         session['access_token'] = token_info['access_token']
-        session['refresh_token'] = token_info['referesh_token']
+        session['refresh_token'] = token_info['refresh_token']
         session['expires_at'] = datetime.now().timestamp() + token_info['expires_in']
 
         return redirect('/playlists')
@@ -63,7 +63,7 @@ def get_playlists():
     if 'access_token' not in session:
         return redirect('/login')
     
-    if datetime.now().timestamp > session['expires_at']:
+    if datetime.now().timestamp() > session['expires_at']:
         return redirect('/refresh-token')
     
     headers = {
