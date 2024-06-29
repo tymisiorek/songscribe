@@ -7,6 +7,7 @@ import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import pandas as pd
+import spotify_api_functions as saf
 
 load_dotenv()
 
@@ -77,6 +78,9 @@ def get_playlists():
     }
     response = requests.get(API_BASE_URL + 'me/playlists', headers = headers)
     playlists = response.json()
+    sp = spotipy.Spotify(auth=session['access_token'])
+    track_ids = saf.get_playlist_tracks(sp)
+    print(f"Retrieved {len(track_ids)} tracks from all playlists.")
 
     return render_template('playlists.html', playlists = playlists['items'])
 

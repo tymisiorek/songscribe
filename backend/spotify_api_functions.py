@@ -4,6 +4,8 @@ import base64
 import requests
 import json
 from flask import Flask
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 
 #load environment variable files
 load_dotenv()
@@ -51,4 +53,21 @@ def get_songs_by_artist(token, artist_id):
     json_result = json.loads(result.content)["tracks"]
     return json_result
 
-
+def get_playlist_tracks(sp):
+    all_tracks = []
+    playlists = sp.current_user_playlists()
+    while playlists:
+        for playlist in playlists['items']:
+            print(f"Fetching tracks from playlist: {playlist['name']}")
+            tracks = sp.playlist_tracks(playlist['id'])
+            
+            while tracks:
+                for item in tracks['items']:
+                    track = item['track']
+                    if track:
+                        all_tracks.append(track['id'])
+                tracks = sp.next(tracks) if tracks['next'] else None
+        
+        playlists = sp.next(playlists) if playlists['next'] else None
+    print(all_tracks)
+    return all_tracks
