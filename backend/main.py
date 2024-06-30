@@ -22,8 +22,6 @@ TOKEN_URL = 'https://accounts.spotify.com/api/token'
 API_BASE_URL =  'https://api.spotify.com/v1/'
 
 
-
-
 @app.route('/')
 def index(): 
     return render_template('index.html')
@@ -85,6 +83,18 @@ def get_playlists():
 
     return render_template('playlists.html', playlists = playlists['items'])
 
+@app.route('/generate-playlist', methods = ['POST'])
+def generate_playlist():
+    if 'access_token' not in session:
+        return redirect('/login')
+    if datetime.now().timestamp() > session['expires_at']:
+        return redirect('/refresh-token')
+    
+    headers = {
+        'Authorization': f"Bearer {session['access_token']}"
+    }
+    response = requests.get(API_BASE_URL + 'me/generate-playlist', headers = headers)
+    return render_template('generate_playlist.html')
 
 @app.route('/refresh-token')
 def refresh_token():
