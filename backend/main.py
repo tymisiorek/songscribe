@@ -80,6 +80,7 @@ def get_playlists():
     playlists = response.json()
     sp = spotipy.Spotify(auth=session['access_token'])
     track_ids = saf.get_playlist_tracks(sp)
+    audio_features = saf.get_audio_features(sp, track_ids)
     print(f"Retrieved {len(track_ids)} tracks from all playlists.")
 
     return render_template('playlists.html', playlists = playlists['items'])

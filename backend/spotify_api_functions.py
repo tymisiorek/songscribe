@@ -6,11 +6,13 @@ import json
 from flask import Flask
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+import pandas as pd
 
 #load environment variable files
 load_dotenv()
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+FEATURES_PATH = os.getenv("FEATURES_PATH")
 
 #get token
 def get_token():
@@ -69,5 +71,15 @@ def get_playlist_tracks(sp):
                 tracks = sp.next(tracks) if tracks['next'] else None
         
         playlists = sp.next(playlists) if playlists['next'] else None
-    print(all_tracks)
     return all_tracks
+
+def get_audio_features(sp, track_ids):
+    audio_features = []
+    for i in range(0, len(track_ids), 100):
+        batch = track_ids[i:i+100]
+        features = sp.audio_features(batch)
+        audio_features.extend([f for f in features if f is not None])
+    audio_features_df = pd.DataFrame(audio_features)
+    audio_features_df.to_csv(FEATURES_PATH)
+    return audio_features_df
+
