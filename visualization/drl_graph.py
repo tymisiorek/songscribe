@@ -21,5 +21,5 @@ graph.vs["color"] = [palette.get(membership) for membership in graph.vs["members
 plot(graph, layout=layout, vertex_size=5, edge_width=0.5, bbox=(2000, 2000), margin=20, target= DATASET_PATH + "collaboration_network.png")
 graph.write_gml(DATASET_PATH + 'collaboration_network.gml')
 
-with open("collaboration_network.pkl", "wb") as f:
+with open(DATASET_PATH + "collaboration_network.pkl", "wb") as f:
     pickle.dump((graph, layout), f)
