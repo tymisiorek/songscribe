@@ -9,7 +9,7 @@ import json
 
 load_dotenv()
 DATASET_PATH = os.getenv("DATASET_PATH")
-collab_path = "spotifyproj/songscribe/frontend/static/"
+collab_path = "frontend/static/"
 
 with open(DATASET_PATH + "collaboration_network.pkl", "rb") as f:
     graph, layout = pickle.load(f)
@@ -21,6 +21,6 @@ def create_subset(graph, num_nodes):
     edges = [{"source": e.source, "target": e.target} for e in subgraph.es]
     return {"nodes": nodes, "links": edges}
 
-initial_subset = create_subset(graph, 5000) 
+initial_subset = create_subset(graph, 10000) 
 with open(collab_path + "network_initial.json", "w") as f:
     json.dump(initial_subset, f)
