@@ -46,7 +46,7 @@
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-        d3.json("path_to_your_file/graph.json").then(graph => {
+        d3.json("{{ url_for('static', filename='collaboration_network.json') }}").then(graph => {
             const link = svg.append("g")
                 .attr("class", "links")
                 .selectAll("line")
@@ -117,6 +117,8 @@
                 d.fx = null;
                 d.fy = null;
             }
+        }).catch(error => {
+            console.error('Error loading json', error);
         });
     </script>
 </body>

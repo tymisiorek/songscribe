@@ -11,7 +11,7 @@ import spotify_api_functions as saf
 
 load_dotenv()
 
-app = Flask(__name__, template_folder='../frontend/templates')
+app = Flask(__name__, template_folder='../frontend/templates', static_folder = '../frontend/static')
 #add later
 app.secret_key = os.getenv("SECRET_KEY")
 CLIENT_ID = os.getenv("CLIENT_ID")
