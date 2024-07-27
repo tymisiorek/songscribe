@@ -46,21 +46,28 @@ def assemble_network(node_df, edge_df):
     graph = ig.Graph()
     num_vertices = node_df["spotify_id"].unique()
     graph.add_vertices(num_vertices)
+    
     edges = list(zip(edge_df["id_0"], edge_df["id_1"]))
     cleaned_edges = []
+    
     for edge in edges:
-        if edge[0] in node_df["spotify_id"] or edge[1] in node_df["spotify_id"]:
+        if edge[0] in node_df["spotify_id"].values and edge[1] in node_df["spotify_id"].values:
             cleaned_edges.append(edge)
-    graph.add_edges(cleaned_edges)
+    
+    batch_size = 10000  # Batch size for adding edges
+    for i in range(0, len(cleaned_edges), batch_size):
+        graph.add_edges(cleaned_edges[i:i+batch_size])
+        print(f"Added {min(i+batch_size, len(cleaned_edges))} edges out of {len(cleaned_edges)}")
+    
     layout = graph.layout('fr')
     ig.plot(
         graph,
-        layout = layout,
-        vertex_size=2,           
+        layout=layout,
+        vertex_size=2,
         vertex_color='skyblue',
-        edge_width = 0.75,             
-        edge_color='gray',         
-        bbox=(3200, 3200)   
+        edge_width=1,
+        edge_color='gray',
+        bbox=(1000, 1000)  # Reduced plot size
     ).save(DATASET_PATH + 'collaboration_network.png')
     graph.write_gml(DATASET_PATH + 'collaboration_network.gml')
     
