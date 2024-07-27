@@ -115,5 +115,9 @@ def refresh_token():
 
         return redirect('/playlists')
     
+@app.route('/network')
+def network():
+    return render_template('network.html')
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug = True)
