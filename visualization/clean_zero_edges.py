@@ -19,7 +19,9 @@ def create_edge_df():
     return edge_df
 
 def remove_no_edges(node_df, edge_df):
-    node_list = node_df.values
+    node_list = node_df["spotify_id"].values
+    cleaned_nodes = []
+    
     
 
 node_df = create_node_df()
