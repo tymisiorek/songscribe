@@ -78,9 +78,9 @@ def get_playlists():
     response = requests.get(API_BASE_URL + 'me/playlists', headers = headers)
     playlists = response.json()
     sp = spotipy.Spotify(auth=session['access_token'])
-    artist_ids = saf.get_artists_from_playlists(sp)
+    # artist_ids = saf.get_artists_from_playlists(sp)
     # audio_features = saf.get_audio_features(sp, track_ids)
-    print(f"Retrieved {len(artist_ids)} artists from all playlists.")
+    # print(f"Retrieved {len(artist_ids)} artists from all playlists.")
 
     return render_template('playlists.html', playlists = playlists['items'])
 
