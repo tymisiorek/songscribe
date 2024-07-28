@@ -83,3 +83,19 @@ def get_audio_features(sp, track_ids):
     audio_features_df.to_csv(FEATURES_PATH)
     return audio_features_df
 
+def get_artists_from_playlists(sp):
+    artists = set()
+    playlists = sp.current_user_playlists()
+    while playlists:
+        for playlist in playlists['items']:
+            print(f"Fetching tracks from playlist: {playlist['name']}")
+            tracks = sp.playlist_tracks(playlist['id'])
+            while tracks:
+                for item in tracks['items']:
+                    track = item['track']
+                    if track and 'artists' in track:
+                        for artist in track['artists']:
+                            artists.add(artist['id'])
+                tracks = sp.next(tracks) if tracks['next'] else None
+        playlists = sp.next(playlists) if playlists['next'] else None
+    return list(artists)
