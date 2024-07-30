@@ -21,6 +21,6 @@ def create_subset(graph, num_nodes):
     edges = [{"source": e.source, "target": e.target} for e in subgraph.es]
     return {"nodes": nodes, "links": edges}
 
-initial_subset = create_subset(graph, 20000) 
+initial_subset = create_subset(graph, 50000) 
 with open(collab_path + "network_initial.json", "w") as f:
     json.dump(initial_subset, f)
