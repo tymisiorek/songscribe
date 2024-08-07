@@ -1,16 +1,33 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Network Visualization</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
-    <h1>Interactive Network Visualization</h1>
-    <svg width="960" height="600"></svg>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <div id="container">
+        <svg></svg>
+    </div>
     <script src="{{ url_for('static', filename='js/network.js') }}"></script>
 </body>
 </html>
