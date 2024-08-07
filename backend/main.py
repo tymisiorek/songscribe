@@ -9,10 +9,12 @@ from spotipy.oauth2 import SpotifyOAuth
 import pandas as pd
 import spotify_api_functions as saf
 import json
+from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__, template_folder='../frontend/templates', static_folder = '../frontend')
+CORS(app)
 #add later
 app.secret_key = os.getenv("SECRET_KEY")
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -78,9 +80,9 @@ def get_playlists():
     response = requests.get(API_BASE_URL + 'me/playlists', headers = headers)
     playlists = response.json()
     sp = spotipy.Spotify(auth=session['access_token'])
-    # artist_ids = saf.get_artists_from_playlists(sp)
+    artist_ids = saf.get_artists_from_playlists(sp)
     # audio_features = saf.get_audio_features(sp, track_ids)
-    # print(f"Retrieved {len(artist_ids)} artists from all playlists.")
+    print(f"Retrieved {len(artist_ids)} artists from all playlists.")
 
     return render_template('playlists.html', playlists = playlists['items'])
 
@@ -128,12 +130,21 @@ def artist_ids():
     artist_ids = saf.get_artists_from_playlists(sp)
     return jsonify(artist_ids)
 
+# @app.route('/network_data')
+# def network_data():
+#     json_path = os.path.join(app.static_folder, 'static/network_initial.json')
+#     with open(json_path) as f:
+#         network_data = json.load(f)
+#     return jsonify(network_data)
+
 @app.route('/network_data')
 def network_data():
-    json_path = os.path.join(app.static_folder, 'static/spotify_atlas.gexf')
+    json_path = os.path.join(app.static_folder, 'static/spotify_atlas.json')
     with open(json_path) as f:
         network_data = json.load(f)
     return jsonify(network_data)
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug = True)
