@@ -130,17 +130,11 @@ def artist_ids():
     artist_ids = saf.get_artists_from_playlists(sp)
     return jsonify(artist_ids)
 
-# @app.route('/network_data')
-# def network_data():
-#     json_path = os.path.join(app.static_folder, 'static/spotify_atlas.json')
-#     with open(json_path) as f:
-#         network_data = json.load(f)
-#     return jsonify(network_data)
 
 @app.route('/network_data')
 def network_data():
     # Load JSON data
-    json_path = os.path.join(app.static_folder, 'static/spotify_atlas.json')
+    json_path = os.path.join(app.static_folder, 'static/spotify_atlas_new.json')
     with open(json_path) as f:
         network_data = json.load(f)
     

@@ -69,10 +69,10 @@ fetch("http://localhost:5000/network_data")
                     infoDiv.textContent = `Artist: ${node.caption}`;  // Display artist name if available
                 }
             })
-            .d3Force('charge', d3.forceManyBody().strength(-175))  // Increase repulsion between nodes
-            .d3Force('link', d3.forceLink().distance(70))  // Increase preferred distance between connected nodes
+            .d3Force('charge', d3.forceManyBody().strength(-500))  // Increase repulsion between nodes
+            .d3Force('link', d3.forceLink().distance(150))  // Increase preferred distance between connected nodes
             .d3Force('center', d3.forceCenter(elem.clientWidth / 2, elem.clientHeight / 2).strength(0.1))  // Reduce pull towards the center
-            .d3VelocityDecay(0.3)  // Increase the decay rate to make the animation faster
+            .d3Force('collision', d3.forceCollide().radius(d => d.size * 1.5))  // Prevent nodes from overlapping
             .d3AlphaMin(0.1)  // Increase the minimum alpha value to stop the simulation earlier
             .d3AlphaDecay(0.05);  // Increase the decay rate to make the simulation settle faster
 

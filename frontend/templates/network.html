@@ -9,20 +9,23 @@
         #3d-graph { width: 100vw; height: 100vh; }
         #node-info {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            bottom: 20px; /* Position it 20px from the bottom */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Offset by 50% of its own width to truly center */
             color: white;
-            font-size: 16px;
+            font-size: 32px; /* Double the font size */
             z-index: 1;
             background-color: rgba(0, 0, 0, 0.7);
-            padding: 5px;
-            border-radius: 3px;
+            padding: 10px; /* Double the padding */
+            border-radius: 6px; /* Increase the border radius slightly */
+            text-align: center; /* Center the text inside the box */
         }
     </style>
+    
     <script src="https://unpkg.com/3d-force-graph"></script>
 </head>
 <body>
-    <div id="node-info"> </div>
+    <div id="node-info"></div>
     <div id="3d-graph"></div>
     <script src="{{ url_for('static', filename='js/network.js') }}"></script>
 </body>
