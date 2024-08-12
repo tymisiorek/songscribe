@@ -16,7 +16,7 @@ CORS(app)
 app.secret_key = os.getenv("SECRET_KEY")
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REDIRECT_URI = "https://spotify-collaboration-network-7f7d5ee3e659.herokuapp.com/"
+# REDIRECT_URI = "https://spotify-collaboration-network-7f7d5ee3e659.herokuapp.com/"
 # AUTH_URL = 'https://accounts.spotify.com/authorize'
 # TOKEN_URL = 'https://accounts.spotify.com/api/token'
 # API_BASE_URL =  'https://api.spotify.com/v1/'

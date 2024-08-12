@@ -5,7 +5,7 @@ const infoDiv = document.getElementById('node-info');
 
 console.log("Fetching network data");
 
-fetch("http://localhost:5000/network_data")
+fetch("https://spotify-collaboration-network-7f7d5ee3e659.herokuapp.com/network_data")
     .then(response => response.json())
     .then(graph => {
         if (!graph.nodes || !graph.edges) {
