@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 import urllib.parse
 import os
 import pandas as pd
-import spotify_api_functions as saf
 import json
 from flask_cors import CORS
 
