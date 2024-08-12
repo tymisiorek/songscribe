@@ -4,8 +4,6 @@ from flask import Flask, redirect, request, jsonify, session, render_template
 from datetime import datetime, timedelta
 import urllib.parse
 import os
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
 import pandas as pd
 import spotify_api_functions as saf
 import json
