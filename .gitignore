@@ -1,2 +1,17 @@
 .env
 backend/spotify_api_test.py
+backend/spotify_api_functions.py
+data/collaboration_network.gml
+data/collaboration_network.json
+data/collaboration_network.pkl
+data/collaboration_network.png
+data/network_initial.json
+data/edges.csv
+data/spotify_ord.csv
+frontend/templates/playlists.html
+frontend/templates/generate_playlist.html
+visualization/collaboration_network.py
+visualization/convert_graph_json.py
+visualization/drl_graph.py
+visualization/shorten_node_list.py
+visualization/subset_network.py
