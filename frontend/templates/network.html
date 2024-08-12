@@ -4,11 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Force Graph Visualization</title>
-    <style> body { margin: 0; } </style>
+    <style>
+        body { margin: 0; }
+        #3d-graph { width: 100vw; height: 100vh; }
+        #node-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 16px;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 5px;
+            border-radius: 3px;
+        }
+    </style>
     <script src="https://unpkg.com/3d-force-graph"></script>
 </head>
 <body>
-    <div id="3d-graph" style="width: 100vw; height: 100vh;"></div>
+    <div id="node-info"> </div>
+    <div id="3d-graph"></div>
     <script src="{{ url_for('static', filename='js/network.js') }}"></script>
 </body>
 </html>

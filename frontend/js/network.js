@@ -1,6 +1,7 @@
 console.log("loaded js file");
 
 const elem = document.getElementById('3d-graph');
+const infoDiv = document.getElementById('node-info');
 
 console.log("Fetching network data...");
 // Fetch the network data from the Flask route
@@ -13,40 +14,42 @@ fetch("http://localhost:5000/network_data")
 
         console.log("Network data fetched:", graph);
 
-        // More aggressive sampling: Sample 1/20th of the nodes
-        const sampledNodes = graph.nodes.filter((node, index) => index % 3 === 0);
-        const sampledNodeIds = new Set(sampledNodes.map(node => node.id));
+        const sampledNodes = graph.nodes.filter((node, index) => index % 1 === 0);
+        const sampledNodeIds = new Set(sampledNodes.map(node => node.label)); // Use label as the ID now
         const sampledLinks = graph.edges.filter(edge => sampledNodeIds.has(edge.source) && sampledNodeIds.has(edge.target));
-
-        // Define a function to determine the z-coordinate based on community
-        const communityElevation = community => {
-            const baseHeight = 0;
-            const elevationStep = 20;
-            return baseHeight + community * elevationStep;
-        };
 
         // Prepare nodes and links
         const nodes = sampledNodes.map(node => ({
-            id: node.id,
-            label: node.label,
-            community: node.attributes.membership,
-            caption: node.attributes.name,
+            id: node.label,  // Retain the original ID
+            community: node.attributes['Modularity Class'],
+            caption: node.attributes.artist_name || node.attributes.name,  // Display the artist name if available
             size: node.size,
-            color: node.color,
-            x: node.x, // Preserve existing x position if available
-            y: node.y, // Preserve existing y position if available
-            z: communityElevation(node.attributes.membership) // Elevate z position based on community
+            color: node.color
         }));
 
-        const links = sampledLinks.map(edge => ({
-            source: edge.source,
-            target: edge.target,
-            weight: edge.weight || 1,  // Assuming weight exists, otherwise default to 1
-            community: Math.min(
-                nodes.find(node => node.id === edge.source).community,
-                nodes.find(node => node.id === edge.target).community
-            )
-        }));
+        const links = sampledLinks.map(edge => {
+            const sourceNode = nodes.find(node => node.id === edge.source);
+            const targetNode = nodes.find(node => node.id === edge.target);
+
+            const sourceColor = sourceNode.color.match(/\d+/g).map(Number);
+            const targetColor = targetNode.color.match(/\d+/g).map(Number);
+
+            // Calculate the average color
+            const avgColor = `rgb(${Math.floor((sourceColor[0] + targetColor[0]) / 2)},
+                                  ${Math.floor((sourceColor[1] + targetColor[1]) / 2)},
+                                  ${Math.floor((sourceColor[2] + targetColor[2]) / 2)})`;
+
+            return {
+                source: edge.source,
+                target: edge.target,
+                weight: edge.weight || 1,  // Assuming weight exists, otherwise default to 1
+                color: avgColor,
+                community: Math.min(
+                    sourceNode.community,
+                    targetNode.community
+                )
+            };
+        });
 
         const gData = { nodes, links };
 
@@ -54,29 +57,24 @@ fetch("http://localhost:5000/network_data")
             .graphData(gData)
             .nodeAutoColorBy('community')
             .nodeVal('size')
-            .linkAutoColorBy('community')
-            .linkWidth(0.5)  // Reduce link width for better performance
-            .linkDirectionalParticles(0)  // Disable directional particles for performance
-            .nodeResolution(6)  // Lower node resolution for better performance
+            .linkColor(link => link.color) // Use the calculated average color for links
+            .linkWidth(0.8)  // Reduce link width for better performance
+            .linkDirectionalParticles(0.4)  // Disable directional particles for performance
+            .nodeResolution(10)  // Lower node resolution for better performance
             .enableNodeDrag(false)  // Disable node dragging
             .nodeThreeObjectExtend(true)  // This setting allows you to retain custom node properties
             .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
-            .d3Force('charge', d3.forceManyBody().strength(-150))  // Increase repulsion between nodes
-            .d3Force('link', d3.forceLink().distance(50))  // Increase preferred distance between connected nodes
-            .d3Force('center', d3.forceCenter(0, 0, 0))  // Center the graph
+            .onNodeClick(node => {
+                if (node) {
+                    infoDiv.textContent = `Artist: ${node.caption}`;  // Display artist name if available
+                }
+            })
+            .d3Force('charge', d3.forceManyBody().strength(-175))  // Increase repulsion between nodes
+            .d3Force('link', d3.forceLink().distance(70))  // Increase preferred distance between connected nodes
+            .d3Force('center', d3.forceCenter(elem.clientWidth / 2, elem.clientHeight / 2).strength(0.1))  // Reduce pull towards the center
             .d3VelocityDecay(0.3)  // Increase the decay rate to make the animation faster
             .d3AlphaMin(0.1)  // Increase the minimum alpha value to stop the simulation earlier
-            .d3AlphaDecay(0.05)  // Increase the decay rate to make the simulation settle faster
-            .onEngineStop(() => {
-                Graph.zoomToFit(400);  // Ensure the graph fits in the view initially
-            });
-
-        // Set the initial camera position and orientation
-        Graph.cameraPosition(
-            { x: -10000, y: -20000, z: 2500 }, // Position the camera far back along the y-axis and elevated on the z-axis
-            { x: 0, y: 0, z: 0 }, // Look at the center of the graph
-            3000  // Duration of the initial transition in ms
-        );
+            .d3AlphaDecay(0.05);  // Increase the decay rate to make the simulation settle faster
 
         // Keep the camera controls enabled
         Graph.controls().enablePan = true;

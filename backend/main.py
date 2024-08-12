@@ -132,19 +132,30 @@ def artist_ids():
 
 # @app.route('/network_data')
 # def network_data():
-#     json_path = os.path.join(app.static_folder, 'static/network_initial.json')
+#     json_path = os.path.join(app.static_folder, 'static/spotify_atlas.json')
 #     with open(json_path) as f:
 #         network_data = json.load(f)
 #     return jsonify(network_data)
 
 @app.route('/network_data')
 def network_data():
+    # Load JSON data
     json_path = os.path.join(app.static_folder, 'static/spotify_atlas.json')
     with open(json_path) as f:
         network_data = json.load(f)
+    
+    # Load CSV with artist names
+    csv_path = os.path.join(app.static_folder, 'static/popular_nodes.csv')
+    artist_map = pd.read_csv(csv_path).set_index('spotify_id').to_dict()['name']
+    
+    # Add a new field for artist names without altering existing structure
+    for node in network_data['nodes']:
+        spotify_id = node['attributes']['name']
+        if spotify_id in artist_map:
+            artist_name = artist_map[spotify_id]
+            node['attributes']['name'] = artist_name  # Add a new field for the artist name
+
     return jsonify(network_data)
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug = True)

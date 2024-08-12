@@ -9,7 +9,7 @@ load_dotenv()
 DATASET_PATH = os.getenv("DATASET_PATH")
 
 def create_node_df():
-    node_path = DATASET_PATH + "nodes.csv"
+    node_path = DATASET_PATH + "popular_nodes.csv"
     node_df = pd.read_csv(node_path)
     return node_df
 
