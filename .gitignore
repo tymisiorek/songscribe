@@ -15,3 +15,8 @@ visualization/convert_graph_json.py
 visualization/drl_graph.py
 visualization/shorten_node_list.py
 visualization/subset_network.py
+*.pyc
+__pycache__/
+instance/
+.webassets-cache
+.env
